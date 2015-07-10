@@ -1,6 +1,6 @@
 #!/bin/sh -ex
 
-TESTGEN=`command -v ../fs_test/testgen/testgen || command -v testgen`
+TESTGEN=`command -v ../fs_test/tgen || command -v tgen`
 
 rm -r link
 $TESTGEN -l link
