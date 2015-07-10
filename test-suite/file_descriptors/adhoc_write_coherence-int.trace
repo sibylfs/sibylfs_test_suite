@@ -1,0 +1,110 @@
+@type script
+
+# Test interactions between writes to shared fds
+
+# First, just check read/write
+open "f1.txt" [O_CREAT;O_RDWR] 0o600
+write! (FD 3) "0123456789" 10
+
+pread! (FD 3) 3 2
+
+open "f1.txt" [O_CREAT;O_RDWR] 0o600
+read! (FD 4) 3
+write! (FD 4) "!@#" 3
+
+write! (FD 3) "ABCDEFGHIJ" 10
+
+pread! (FD 3) 100 0
+pread! (FD 4) 100 0
+
+
+# truncate is a kind of mutation
+
+truncate "f1.txt" 15
+
+pread! (FD 4) 100 0
+pread! (FD 3) 100 0
+
+# and truncation can happen during open
+
+open "f1.txt" [O_RDWR;O_TRUNC;O_APPEND]
+
+pread! (FD 4) 100 0
+pread! (FD 3) 100 0
+
+# where's the cursor?
+
+write! (FD 3) "abc" 3
+write! (FD 4) "def" 3
+
+pread! (FD 5) 100 0
+
+write! (FD 5) "|/-\\|" 5
+
+pread! (FD 3) 100 0
+read! (FD 3) 100
+read! (FD 4) 100
+
+write! (FD 4) "zyxwv" 5
+read! (FD 5) 100
+
+write! (FD 3) "01234567890123456789" 20
+pread! (FD 4) 100 0
+write! (FD 5) "appended!" 9
+read! (FD 4) 100
+
+pread! (FD 3) 100 0
+
+# Let's go multiprocess!
+
+Pid 2 -> create (User_id 0) (Group_id 0)
+
+Pid 2 -> open "f1.txt" [O_RDWR; O_TRUNC]
+
+pread! (FD 3) 100 0
+
+Pid 2 -> pread! (FD 3) 100 0
+
+Pid 2 -> write! (FD 3) "2" 1
+
+read! (FD 3) 100
+
+write! (FD 5) "." 1
+pread! (FD 5) 100 0
+
+Pid 2 -> pread! (FD 3) 100 0
+Pid 2 -> write! (FD 3) "3" 1
+Pid 2 -> pread! (FD 3) 100 0
+
+Pid 2 -> open "f1.txt" [O_RDWR; O_APPEND]
+
+Pid 2 -> write! (FD 4) "4" 1
+Pid 2 -> pread! (FD 3) 100 0
+
+truncate "f1.txt" 1
+
+Pid 2 -> pread! (FD 3) 100 0
+Pid 2 -> write! (FD 3) "5" 1
+Pid 2 -> write! (FD 4) "6" 1
+Pid 2 -> pread! (FD 3) 100 0
+Pid 2 -> write! (FD 3) "7" 1
+Pid 2 -> pread! (FD 4) 100 0
+
+pread! (FD 3) 100 0
+write! (FD 5) "!" 1
+
+Pid 2 -> pread! (FD 3) 100 0
+
+unlink "f1.txt"
+
+close (FD 3)
+
+pread! (FD 4) 100 0
+write! (FD 5) "?" 1
+
+Pid 2 -> pread! (FD 3) 100 0
+Pid 2 -> write! (FD 4) "8" 1
+Pid 2 -> close (FD 3)
+Pid 2 -> pread! (FD 3) 100 0
+
+pread! (FD 4) 100 0

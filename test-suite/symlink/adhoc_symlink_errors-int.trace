@@ -1,0 +1,25 @@
+@type script
+# adhoc_symlink_errors
+
+mkdir /dir 0o777
+
+symlink /dir ""
+readlink ""
+
+symlink /dir "."
+readlink "."
+
+symlink /dir ".."
+readlink ".."
+
+symlink /dir "./."
+readlink "./."
+
+symlink /dir /
+readlink /
+
+# the new link name must not end with a slash
+symlink "xyz" /slink_1
+symlink "xyz" /slink_2/
+
+dump /

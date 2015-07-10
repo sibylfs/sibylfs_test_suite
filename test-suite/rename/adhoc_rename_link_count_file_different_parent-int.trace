@@ -1,0 +1,35 @@
+@type script
+
+###########################################
+# Test link count of files after rename
+###########################################
+
+# test that renaming a file with a link in another existing file does not effect the link count
+
+open_close "/f1.txt" [O_CREAT] 0o666
+
+open_close "/f2.txt" [O_CREAT] 0o666
+
+link "/f1.txt" "/f1_hl.txt"
+
+stat "f1.txt"
+
+stat "f2.txt"
+
+stat "f1_hl.txt"
+
+rename "f1.txt" "f2.txt"
+
+stat "f2.txt"
+
+stat "f1_hl.txt"
+
+# test that renaming a file in another existing file with a link affects the link count
+
+open_close "/f1.txt" [O_CREAT] 0o666
+
+rename "f1.txt" "f2.txt"
+
+stat "f2.txt"
+
+stat "f1_hl.txt"

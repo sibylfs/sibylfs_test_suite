@@ -1,0 +1,54 @@
+@type script
+# adhoc_symlink_trailing_slash
+
+mkdir /dir_bk9 0o777
+
+open /dir_bk9/f1.txt [O_RDWR;O_CREAT] 0o666
+write! (FD 3) "content of /dir_bk9/f1.txt" 26
+close (FD 3)
+
+open /dir_bk9/f2.txt [O_RDWR;O_CREAT] 0o666
+write! (FD 3) "content of /dir_bk9/f2.txt" 26
+close (FD 3)
+
+# symlink contains no trailing slash
+symlink "f1.txt" /dir_bk9/sl_f1.txt
+stat /dir_bk9/sl_f1.txt
+stat /dir_bk9/sl_f1.txt/
+lstat /dir_bk9/sl_f1.txt
+lstat /dir_bk9/sl_f1.txt/
+
+# symlink contains trailing slash
+symlink "f1.txt/" /dir_bk9/sl_f1_a.txt
+stat /dir_bk9/sl_f1_a.txt
+stat /dir_bk9/sl_f1_a.txt/
+lstat /dir_bk9/sl_f1_a.txt
+lstat /dir_bk9/sl_f1_a.txt/
+
+# symlink contains relative path to another symlink
+symlink "sl_f1.txt" /dir_bk9/sl_f1_b.txt
+stat /dir_bk9/sl_f1_b.txt
+stat /dir_bk9/sl_f1_b.txt/
+lstat /dir_bk9/sl_f1_b.txt
+lstat /dir_bk9/sl_f1_b.txt/
+
+# symlink contains relative path with trailing slash to another symlink 
+symlink "sl_f1.txt/" /dir_bk9/sl_f1_c.txt
+stat /dir_bk9/sl_f1_c.txt
+stat /dir_bk9/sl_f1_c.txt/
+lstat /dir_bk9/sl_f1_c.txt
+lstat /dir_bk9/sl_f1_c.txt/
+
+# creation through symlinks
+
+symlink "not_there" /sl_nt.txt
+open_close /sl_nt.txt/ [O_RDWR;O_CREAT] 0o666
+open_close /sl_nt.txt [O_RDWR;O_CREAT] 0o666
+
+symlink "/dir_bk9" /dir_sl
+
+chdir /dir_sl
+chdir /dir_sl/
+open_close "f1.txt" []
+
+dump /

@@ -1,0 +1,29 @@
+@type script
+
+#################################################
+# Test link count of directories after link
+#################################################
+
+# a new created directory should have link count 2
+
+mkdir "dir" 0o700
+stat "dir"
+
+# after linking the directory, both nodes should have link count 3
+
+link "dir" "dir_hl"
+stat "dir"
+stat "dir_hl"
+
+# keep linking the directory should keep increasing the link count
+
+link "dir_hl" "dir_hl1"
+stat "dir"
+stat "dir_hl"
+stat "dir_hl1"
+
+link "dir_hl1" "dir_hl2"
+stat "dir"
+stat "dir_hl"
+stat "dir_hl1"
+stat "dir_hl2"

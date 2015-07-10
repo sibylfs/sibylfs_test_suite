@@ -1,0 +1,166 @@
+@type script
+###########################################
+# Testing mkdir and creating files
+###########################################
+
+# these tests create parent-directories with various permissions and
+# then try to create files and directories inside these parent
+# directories.  This should only work, if one has search and 
+# write permission to the parent dir. However, the search permission
+# is also needed needed for path resolution. The tests therefore also
+# try to create the files in the current working directory. 
+# before removing x permission.
+
+
+# rwx
+mkdir /tmp_dir_rwx/ 0o777
+chdir /tmp_dir_rwx
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f4" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir "d2" 0o777
+mkdir "d4" 0o777
+chmod /tmp_dir_rwx/ <rwx------>
+
+mkdir "d1" 0o777
+mkdir "d2" 0o777
+open_close "f1" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir /tmp_dir_rwx/d3 0o777
+mkdir /tmp_dir_rwx/d4 0o777
+open_close /tmp_dir_rwx/f3 [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close /tmp_dir_rwx/f4 [O_RDWR;O_CREAT;O_EXCL] 0o666
+
+
+# rw_
+mkdir /tmp_dir_rw_/ 0o777
+chdir /tmp_dir_rw_
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f4" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir "d2" 0o777
+mkdir "d4" 0o777
+chmod /tmp_dir_rw_/ <rw------->
+
+mkdir "d1" 0o777
+mkdir "d2" 0o777
+open_close "f1" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir /tmp_dir_rw_/d3 0o777
+mkdir /tmp_dir_rw_/d4 0o777
+open_close /tmp_dir_rw_/f3 [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close /tmp_dir_rw_/f4 [O_RDWR;O_CREAT;O_EXCL] 0o666
+
+
+# r_x
+mkdir /tmp_dir_r_x/ 0o777
+chdir /tmp_dir_r_x
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f4" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir "d2" 0o777
+mkdir "d4" 0o777
+chmod /tmp_dir_r_x/ <r-x------>
+
+mkdir "d1" 0o777
+mkdir "d2" 0o777
+open_close "f1" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir /tmp_dir_r_x/d3 0o777
+mkdir /tmp_dir_r_x/d4 0o777
+open_close /tmp_dir_r_x/f3 [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close /tmp_dir_r_x/f4 [O_RDWR;O_CREAT;O_EXCL] 0o666
+
+
+# r__
+mkdir /tmp_dir_r__/ 0o777
+chdir /tmp_dir_r__
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f4" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir "d2" 0o777
+mkdir "d4" 0o777
+chmod /tmp_dir_r__/ <r-------->
+
+mkdir "d1" 0o777
+mkdir "d2" 0o777
+open_close "f1" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir /tmp_dir_r__/d3 0o777
+mkdir /tmp_dir_r__/d4 0o777
+open_close /tmp_dir_r__/f3 [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close /tmp_dir_r__/f4 [O_RDWR;O_CREAT;O_EXCL] 0o666
+
+
+
+# _wx
+mkdir /tmp_dir__wx/ 0o777
+chdir /tmp_dir__wx
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f4" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir "d2" 0o777
+mkdir "d4" 0o777
+chmod /tmp_dir__wx/ <-wx------>
+
+mkdir "d1" 0o777
+mkdir "d2" 0o777
+open_close "f1" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir /tmp_dir__wx/d3 0o777
+mkdir /tmp_dir__wx/d4 0o777
+open_close /tmp_dir__wx/f3 [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close /tmp_dir__wx/f4 [O_RDWR;O_CREAT;O_EXCL] 0o666
+
+
+
+# _w_
+mkdir /tmp_dir__w_/ 0o777
+chdir /tmp_dir__w_
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f4" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir "d2" 0o777
+mkdir "d4" 0o777
+chmod /tmp_dir__w_/ <-w------->
+
+mkdir "d1" 0o777
+mkdir "d2" 0o777
+open_close "f1" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir /tmp_dir__w_/d3 0o777
+mkdir /tmp_dir__w_/d4 0o777
+open_close /tmp_dir__w_/f3 [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close /tmp_dir__w_/f4 [O_RDWR;O_CREAT;O_EXCL] 0o666
+
+
+# __x
+mkdir /tmp_dir___x/ 0o777
+chdir /tmp_dir___x
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f4" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir "d2" 0o777
+mkdir "d4" 0o777
+chmod /tmp_dir___x/ <--x------>
+
+mkdir "d1" 0o777
+mkdir "d2" 0o777
+open_close "f1" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir /tmp_dir___x/d3 0o777
+mkdir /tmp_dir___x/d4 0o777
+open_close /tmp_dir___x/f3 [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close /tmp_dir___x/f4 [O_RDWR;O_CREAT;O_EXCL] 0o666
+
+
+# ___
+mkdir /tmp_dir____/ 0o777
+chdir /tmp_dir____
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f4" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir "d2" 0o777
+mkdir "d4" 0o777
+chmod /tmp_dir____/ <--------->
+
+mkdir "d1" 0o777
+mkdir "d2" 0o777
+open_close "f1" [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close "f2" [O_RDWR;O_CREAT;O_EXCL] 0o666
+mkdir /tmp_dir____/d3 0o777
+mkdir /tmp_dir____/d4 0o777
+open_close /tmp_dir____/f3 [O_RDWR;O_CREAT;O_EXCL] 0o666
+open_close /tmp_dir____/f4 [O_RDWR;O_CREAT;O_EXCL] 0o666

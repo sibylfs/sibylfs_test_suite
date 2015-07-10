@@ -1,0 +1,21 @@
+@type script
+
+###########################################
+# Test link count of files after rename
+###########################################
+mkdir "/nonempty_dir2" 0o777
+
+stat "/nonempty_dir2"
+
+mkdir "/nonempty_dir2/mydir" 0o777
+
+stat "/nonempty_dir2/mydir"
+
+
+# test that renaming a directory in the same parent does not change the count
+
+rename "/nonempty_dir2/mydir" "/nonempty_dir2/mydir2"
+
+stat "/nonempty_dir2"
+
+stat "/nonempty_dir2/mydir2"

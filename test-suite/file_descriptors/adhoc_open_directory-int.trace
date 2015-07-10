@@ -1,0 +1,43 @@
+@type script
+
+##############################################
+# O_DIRECTORY
+##############################################
+
+mkdir "d1" <rwxr-xr-x>
+
+# open directory for searching
+open "d1" [O_RDONLY; O_SEARCH]
+read (FD 3) 100
+close (FD 3)
+
+# using O_DIRECTORY with dirs is fine
+# but we can't do anything afterwards :-)
+open "d1" [O_RDONLY; O_DIRECTORY]
+read (FD 3) 100
+close (FD 3)
+
+# using O_DIRECTORY with files fails
+open_close "f1.txt" [O_CREAT;O_RDONLY] 0o600
+open "f1.txt" [O_RDONLY; O_DIRECTORY]
+read (FD 3) 100
+close (FD 3)
+
+# using O_DIRECTORY on non-existing files
+open "no-such-file.txt" [O_RDONLY; O_DIRECTORY]
+read (FD 3) 100
+close (FD 3)
+
+# using O_DIRECTORY on non-existing dir
+open /no-such-dir/ [O_RDONLY; O_DIRECTORY]
+read (FD 3) 100
+close (FD 3)
+
+# we can't create directories
+open /no-such-dir/ [O_RDONLY; O_DIRECTORY; O_CREAT] 0o700
+read (FD 3) 100
+close (FD 3)
+
+open /no-such-dir/ [O_RDONLY; O_CREAT] 0o700
+read (FD 3) 100
+close (FD 3)

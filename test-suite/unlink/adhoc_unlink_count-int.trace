@@ -1,0 +1,45 @@
+@type script
+
+###########################################
+# Test link count of files after unlink
+###########################################
+
+# a new created file should have link count 1
+
+open_close "/f1.txt" [O_CREAT] 0o666
+
+# unlink the file should remove the file
+
+unlink "/f1.txt"
+stat "/f1.txt"
+
+# removing a linked file should reduce count of the link
+
+open_close "/f1.txt" [O_CREAT] 0o666
+link  "/f1.txt" "/f1_hl.txt"
+unlink "f1.txt"
+
+stat "/f1_hl.txt"
+
+# unlink the link should delete the file
+
+unlink "/f1_hl.txt"
+stat "/f1_hl.txt"
+
+# removing the link to a  linked file should reduce count of the file
+
+open_close "/f1.txt" [O_CREAT] 0o666
+link  "/f1.txt" "/f1_hl.txt"
+unlink "f1_hl.txt"
+
+stat "/f1.txt"
+
+## uncomment this test when we have lstat in place
+# unlinking a linked symlink should decrease the symlink link count
+
+#symlink "/f1.txt" "f3_sl.txt"
+#link "f3_sl.txt" "f3_sl_hl.txt"
+#lstat "f3_sl.txt"
+#lstat "f3_sl_hl.txt"
+#unlink "f3_st_hl.txt"
+#lstat "f3_sl.txt"

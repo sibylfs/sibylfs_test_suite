@@ -1,0 +1,17 @@
+@type script
+
+###########################################
+# Test link count of files after rmdir
+###########################################
+
+# removing a subdir should decrease the count of the dir
+
+mkdir "/dir1" 0o777
+stat "/dir1"
+mkdir "/dir1/subdir1" 0o777
+stat "/dir1"
+stat "/dir1/subdir1"
+
+rmdir "/dir1/subdir1"
+stat "/dir1"
+

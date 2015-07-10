@@ -1,0 +1,63 @@
+@type script
+##################################################
+# Testing open with various flags and permissions
+##################################################
+
+mkdir /tmp_dir_uwx/ 0o300
+
+# non-existent
+open /tmp_dir_uw/f-nonexist.txt [O_RDONLY]
+
+# rwx
+open_close /tmp_dir_uwx/f_rwx.txt [O_RDWR;O_CREAT] 0o700
+open_close /tmp_dir_uwx/f_rwx.txt [O_RDONLY]
+open_close /tmp_dir_uwx/f_rwx.txt [O_WRONLY]
+open_close /tmp_dir_uwx/f_rwx.txt [O_RDWR]
+open_close /tmp_dir_uwx/f_rwx.txt [O_RDONLY;O_TRUNC]
+open_close /tmp_dir_uwx/f_rwx.txt [O_WRONLY;O_TRUNC]
+open_close /tmp_dir_uwx/f_rwx.txt [O_RDONLY;O_APPEND]
+open_close /tmp_dir_uwx/f_rwx.txt [O_WRONLY;O_APPEND]
+
+# r--
+open_close /tmp_dir_uwx/f_r.txt [O_RDWR;O_CREAT] 0o400
+open_close /tmp_dir_uwx/f_r.txt [O_RDONLY]
+open_close /tmp_dir_uwx/f_r.txt [O_WRONLY]
+open_close /tmp_dir_uwx/f_r.txt [O_RDWR]
+open_close /tmp_dir_uwx/f_r.txt [O_RDONLY;O_TRUNC]
+open_close /tmp_dir_uwx/f_r.txt [O_WRONLY;O_TRUNC]
+open_close /tmp_dir_uwx/f_r.txt [O_RDONLY;O_APPEND]
+open_close /tmp_dir_uwx/f_r.txt [O_WRONLY;O_APPEND]
+
+# -w-
+open_close /tmp_dir_uwx/f_w.txt [O_RDWR;O_CREAT] 0o200
+open_close /tmp_dir_uwx/f_w.txt [O_RDONLY]
+open_close /tmp_dir_uwx/f_w.txt [O_WRONLY]
+open_close /tmp_dir_uwx/f_w.txt [O_RDWR]
+open_close /tmp_dir_uwx/f_w.txt [O_RDONLY;O_TRUNC]
+open_close /tmp_dir_uwx/f_w.txt [O_WRONLY;O_TRUNC]
+open_close /tmp_dir_uwx/f_w.txt [O_RDONLY;O_APPEND]
+open_close /tmp_dir_uwx/f_w.txt [O_WRONLY;O_APPEND]
+
+# --x
+open_close /tmp_dir_uwx/f_x.txt [O_RDWR;O_CREAT] 0o100
+open_close /tmp_dir_uwx/f_x.txt [O_RDONLY]
+open_close /tmp_dir_uwx/f_x.txt [O_WRONLY]
+open_close /tmp_dir_uwx/f_x.txt [O_RDWR]
+open_close /tmp_dir_uwx/f_x.txt [O_RDONLY;O_TRUNC]
+open_close /tmp_dir_uwx/f_x.txt [O_WRONLY;O_TRUNC]
+open_close /tmp_dir_uwx/f_x.txt [O_RDONLY;O_APPEND]
+open_close /tmp_dir_uwx/f_x.txt [O_WRONLY;O_APPEND]
+
+# rw-
+open_close /tmp_dir_uwx/f_rw.txt [O_RDWR;O_CREAT] 0o600
+open_close /tmp_dir_uwx/f_rw.txt [O_RDONLY]
+open_close /tmp_dir_uwx/f_rw.txt [O_WRONLY]
+open_close /tmp_dir_uwx/f_rw.txt [O_RDWR]
+open_close /tmp_dir_uwx/f_rw.txt [O_RDONLY;O_TRUNC]
+open_close /tmp_dir_uwx/f_rw.txt [O_WRONLY;O_TRUNC]
+open_close /tmp_dir_uwx/f_rw.txt [O_RDONLY;O_APPEND]
+open_close /tmp_dir_uwx/f_rw.txt [O_WRONLY;O_APPEND]
+
+
+dump
+

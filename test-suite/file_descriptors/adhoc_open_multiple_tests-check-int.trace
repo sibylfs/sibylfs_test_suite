@@ -1,0 +1,64 @@
+@type script
+# Tests for open and close with multiple
+# file descriptors opened by multiple processes
+# essentially just check we get the right ids back
+
+Pid 2 -> create (User_id 0) (Group_id 0)
+
+##############################################
+# basic cases that should work
+##############################################
+
+# create a file 
+open "f1.txt" [O_CREAT;O_WRONLY] 0o644
+close (FD 3)
+
+# and another file
+open "f2.txt" [O_CREAT;O_WRONLY] 0o644
+close (FD 3)
+
+
+# open both files in the same process
+open "f1.txt" [O_RDONLY]
+open "f2.txt" [O_RDONLY]
+close (FD 3)
+close (FD 4)
+
+
+# open both files in the same process 
+# and close and open again
+open "f1.txt" [O_RDONLY]
+open "f2.txt" [O_RDONLY]
+close (FD 4)
+open "f2.txt" [O_RDONLY]
+close (FD 3)
+close (FD 4)
+
+
+# open both files in the same process 
+# and close and open again
+Pid 1 -> open "f1.txt" [O_RDONLY]
+Pid 1 -> open "f2.txt" [O_RDONLY]
+Pid 1 -> close (FD 3)
+Pid 1 -> open "f1.txt" [O_RDONLY]
+Pid 1 -> close (FD 4)
+Pid 1 -> close (FD 3)
+
+
+# open both files in the same process 
+# and close and open again
+open "f1.txt" [O_RDONLY]
+open "f2.txt" [O_RDONLY]
+close (FD 3)
+open "f1.txt" [O_RDONLY]
+close (FD 4)
+close (FD 3)
+
+
+
+
+# open both files in the different processes
+Pid 1 -> open "f1.txt" [O_RDONLY]
+Pid 2 -> open "f2.txt" [O_RDONLY]
+Pid 1 -> close (FD 3)
+Pid 2 -> close (FD 3)

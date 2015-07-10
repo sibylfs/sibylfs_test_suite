@@ -1,0 +1,32 @@
+@type script
+#####################################
+# Test link___link_nonempty_dir1__f1.txt_____nonempty_dir1__d2
+#####################################
+mkdir "empty_dir1" 0o777
+mkdir "empty_dir2" 0o777
+mkdir "nonempty_dir1" 0o777
+mkdir "nonempty_dir1/d2" 0o777
+open "nonempty_dir1/d2/f3.txt" [O_CREAT;O_WRONLY] 0o666
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor inc" 83
+close (FD 3)
+mkdir "nonempty_dir1/d2/d3" 0o777
+symlink "../f1.txt" "nonempty_dir1/d2/sl_dotdot_f1.txt"
+symlink "no_such_target" "nonempty_dir1/d2/sl_no_such_target"
+symlink "../no_such_target" "nonempty_dir1/d2/sl_dotdot_no_such_target"
+symlink "../d2" "nonempty_dir1/d2/sl_dotdot_d2"
+open_close "nonempty_dir1/f1.txt" [O_CREAT;O_WRONLY] 0o666
+symlink "f1.txt" "nonempty_dir1/sl_f1.txt"
+mkdir "nonempty_dir2" 0o777
+open_close "nonempty_dir2/f1.txt" [O_CREAT;O_WRONLY] 0o666
+open "nonempty_dir2/f2.txt" [O_CREAT;O_WRONLY] 0o666
+write! (FD 3) "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exer" 167
+close (FD 3)
+mkdir "nonempty_dir2/d2" 0o777
+mkdir "nonempty_dir2/d2/d3" 0o777
+symlink "../../nonempty_dir1/d2/f3.txt" "nonempty_dir2/d2/sl_f3.txt"
+
+link "nonempty_dir1/f1.txt/" "nonempty_dir1/d2"
+
+dump 
+
+

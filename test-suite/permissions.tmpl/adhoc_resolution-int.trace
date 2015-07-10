@@ -1,0 +1,412 @@
+@type script
+###########################################
+# Testing path resolution with permissions
+###########################################
+
+# create 3 nested dirs /d1/d2/d3,
+# d2 also contains a file. Then change read and
+# write permission for d2 and see what files / dirs
+# can still be accessed. To test path resolution the
+# command stat is used, to read the dir d2, readdir.
+# Both relative and absolute paths are tested.
+
+
+###########################################
+# Initialisation
+###########################################
+
+mkdir /d1 0o777
+mkdir /d1/d2/ 0o777
+mkdir /d1/d2/d3 0o777
+open_close /d1/file1.txt [O_RDWR;O_CREAT] 0o666
+open_close /d1/d2/file2.txt [O_RDWR;O_CREAT] 0o666
+open_close /d1/d2/d3/file3.txt [O_RDWR;O_CREAT] 0o666
+
+
+###########################################
+# Absolute paths
+###########################################
+
+# rwx
+chmod /d1/d2 <rwx------>
+opendir /d1/d2
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat /d1/file1.txt
+stat /d1/d2/file2.txt
+stat /d1/d2/d3/file3.txt
+stat /d1/d2/d3
+stat /d1/d2//file2.txt
+stat /d1/d2//d3
+stat /d1/d2/./file2.txt
+stat /d1/d2/./d3
+chdir /d1/d2
+chdir /
+
+# r-x
+chmod /d1/d2 <r-x------>
+opendir /d1/d2
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat /d1/file1.txt
+stat /d1/d2/file2.txt
+stat /d1/d2/d3/file3.txt
+stat /d1
+stat /d1/d2
+stat /d1/d2/
+stat /d1/d2/d3
+stat /d1/d2//file2.txt
+stat /d1/d2//d3
+stat /d1/d2/./file2.txt
+stat /d1/d2/./d3
+chdir /d1/d2
+chdir /
+
+# --x
+chmod /d1/d2 <--x------>
+opendir /d1/d2
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat /d1/file1.txt
+stat /d1/d2/file2.txt
+stat /d1/d2/d3/file3.txt
+stat /d1
+stat /d1/d2
+stat /d1/d2/
+stat /d1/d2/d3
+stat /d1/d2//file2.txt
+stat /d1/d2//d3
+stat /d1/d2/./file2.txt
+stat /d1/d2/./d3
+chdir /d1/d2
+
+# r--
+chmod /d1/d2 <r-------->
+opendir /d1/d2
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat /d1/file1.txt
+stat /d1/d2/file2.txt
+stat /d1/d2/d3/file3.txt
+stat /d1
+stat /d1/d2
+stat /d1/d2/
+stat /d1/d2/d3
+stat /d1/d2//file2.txt
+stat /d1/d2//d3
+stat /d1/d2/./file2.txt
+stat /d1/d2/./d3
+chdir /d1/d2
+chdir /
+
+
+###########################################
+# Relative paths from d1
+###########################################
+
+chdir /d1
+
+# rwx
+chmod "d2" <rwx------>
+opendir "d2"
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat "file1.txt"
+stat "d2/file2.txt"
+stat "d2/d3/file3.txt"
+stat "."
+stat "d2"
+stat "d2/"
+stat "d2/d3"
+stat "d2//file2.txt"
+stat "d2//d3"
+stat "d2/./file2.txt"
+stat "d2/./d3"
+chdir "d2"
+chdir /d1
+
+# r-x
+chmod "d2" <r-x------>
+opendir "d2"
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat "file1.txt"
+stat "d2/file2.txt"
+stat "d2/d3/file3.txt"
+stat "."
+stat "d2"
+stat "d2/"
+stat "d2/d3"
+stat "d2//file2.txt"
+stat "d2//d3"
+stat "d2/./file2.txt"
+stat "d2/./d3"
+chdir "d2"
+chdir /d1
+
+# --x
+chmod "d2" <--x------>
+opendir "d2"
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat "file1.txt"
+stat "d2/file2.txt"
+stat "d2/d3/file3.txt"
+stat "."
+stat "d2"
+stat "d2/"
+stat "d2/d3"
+stat "d2//file2.txt"
+stat "d2//d3"
+stat "d2/./file2.txt"
+stat "d2/./d3"
+chdir "d2"
+chdir /d1
+
+# r--
+chmod "d2" <r-------->
+opendir "d2"
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat "file1.txt"
+stat "d2/file2.txt"
+stat "d2/d3/file3.txt"
+stat "."
+stat "d2"
+stat "d2/"
+stat "d2/d3"
+stat "d2//file2.txt"
+stat "d2//d3"
+stat "d2/./file2.txt"
+stat "d2/./d3"
+chdir "d2"
+chdir /d1
+
+###########################################
+# Relative paths from d2
+###########################################
+
+chmod /d1/d2 <rwx------>
+chdir /d1/d2
+
+# rwx
+chmod "." <rwx------>
+opendir "."
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat "../file1.txt"
+stat "file2.txt"
+stat "d3/file3.txt"
+stat ".."
+stat "."
+stat "./"
+stat "d3"
+stat ".//file2.txt"
+stat ".//d3"
+stat "./file2.txt"
+stat "./d3"
+chdir "."
+
+# r-x
+chmod "." <r-x------>
+opendir "."
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat "../file1.txt"
+stat "file2.txt"
+stat "d3/file3.txt"
+stat ".."
+stat "."
+stat "./"
+stat "d3"
+stat ".//file2.txt"
+stat ".//d3"
+stat "./file2.txt"
+stat "./d3"
+chdir "."
+
+# --x
+chmod "." <--x------>
+opendir "."
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat "../file1.txt"
+stat "file2.txt"
+stat "d3/file3.txt"
+stat ".."
+stat "."
+stat "./"
+stat "d3"
+stat ".//file2.txt"
+stat ".//d3"
+stat "./file2.txt"
+stat "./d3"
+chdir "."
+
+
+# r--
+chmod "." <r-------->
+opendir "."
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat "../file1.txt"
+stat "file2.txt"
+stat "d3/file3.txt"
+stat ".."
+stat "."
+stat "./"
+stat "d3"
+stat ".//file2.txt"
+stat ".//d3"
+stat "./file2.txt"
+stat "./d3"
+chdir "."
+
+
+###########################################
+# Relative paths from d3
+###########################################
+
+chmod /d1/d2 <rwx------>
+chdir /d1/d2/d3
+
+# rwx
+chmod ".." <rwx------>
+opendir ".."
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat "../../file1.txt"
+stat "../file2.txt"
+stat "file3.txt"
+stat "../d3"
+stat "..//file2.txt"
+stat "..//d3"
+stat ".././file2.txt"
+stat ".././d3"
+stat "../d3/../file2.txt"
+stat "../d3/../d3"
+chdir ".."
+
+chmod /d1/d2 <rwx------>
+chdir /d1/d2/d3
+
+# r-x
+chmod ".." <r-x------>
+opendir ".."
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat "../../file1.txt"
+stat "../file2.txt"
+stat "file3.txt"
+stat "../.."
+stat ".."
+stat "../"
+stat "."
+stat "../d3"
+stat "..//file2.txt"
+stat "..//d3"
+stat ".././file2.txt"
+stat ".././d3"
+stat "../d3/../file2.txt"
+stat "../d3/../d3"
+chdir ".."
+
+chmod /d1/d2 <rwx------>
+chdir /d1/d2/d3
+
+# --x
+chmod ".." <--x------>
+opendir ".."
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat "../../file1.txt"
+stat "../file2.txt"
+stat "file3.txt"
+stat "../.."
+stat ".."
+stat "../"
+stat "."
+stat "../d3"
+stat "..//file2.txt"
+stat "..//d3"
+stat ".././file2.txt"
+stat ".././d3"
+stat "../d3/../file2.txt"
+stat "../d3/../d3"
+chdir ".."
+chdir /d1
+
+chmod /d1/d2 <rwx------>
+chdir /d1/d2/d3
+
+# r--
+chmod ".." <r-------->
+opendir ".."
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+stat "../../file1.txt"
+stat "../file2.txt"
+stat "file3.txt"
+stat "../.."
+stat ".."
+stat "../"
+stat "."
+stat "../d3"
+stat "..//file2.txt"
+stat "..//d3"
+stat ".././file2.txt"
+stat ".././d3"
+stat "../d3/../file2.txt"
+stat "../d3/../d3"
+chdir ".."
+
+chmod /d1/d2 <rwx------>
+chdir /d1/d2/d3

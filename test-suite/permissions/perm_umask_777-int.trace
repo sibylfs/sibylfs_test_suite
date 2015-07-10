@@ -1,0 +1,38 @@
+@type script
+#####################################
+# Test perm_umask_777
+#####################################
+
+#Initialize environment
+
+umask 0o777
+umask 0o777
+
+#Test
+
+symlink "nonexistent" "sl"
+lstat "sl"
+
+open_close "f_777" [O_CREAT;O_RDWR] 0o777
+stat "f_777"
+
+mkdir "d_777" 0o777
+stat "d_777"
+
+open_close "f_444" [O_CREAT;O_RDWR] 0o444
+stat "f_444"
+
+mkdir "d_444" 0o444
+stat "d_444"
+
+open_close "f_322" [O_CREAT;O_RDWR] 0o322
+stat "f_322"
+
+mkdir "d_322" 0o322
+stat "d_322"
+
+open_close "f_000" [O_CREAT;O_RDWR] 0o000
+stat "f_000"
+
+mkdir "d_000" 0o000
+stat "d_000"

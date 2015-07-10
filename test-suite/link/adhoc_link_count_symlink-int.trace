@@ -1,0 +1,29 @@
+@type script
+
+#################################################
+# Test link count of symlinks after link
+#################################################
+
+# a new created file should have link count 1
+
+symlink "missing" "symlink"
+lstat "symlink"
+
+# after linking the symlink, both nodes should have link count 2
+
+link "symlink" "symlink_hl"
+lstat "symlink"
+lstat "symlink_hl"
+
+# keep linking the symlink should keep increasing the link count
+
+link "symlink_hl" "symlink_hl1"
+lstat "symlink"
+lstat "symlink_hl"
+lstat "symlink_hl1"
+
+link "symlink_hl1" "symlink_hl2"
+lstat "symlink"
+lstat "symlink_hl"
+lstat "symlink_hl1"
+lstat "symlink_hl2"

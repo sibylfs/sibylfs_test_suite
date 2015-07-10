@@ -1,0 +1,158 @@
+@type script
+# Tests for open and close
+
+##############################################
+# basic cases that should work
+##############################################
+
+# create a file with some content
+open "f1.txt" [O_WRONLY;O_CREAT] <rw-r--r-->
+write (FD 3) "0123456789" 10
+close (FD 3)
+
+# read that file again
+open "f1.txt" [O_RDONLY]
+read (FD 3) 100
+close (FD 3)
+
+# read-write
+open "f1.txt" [O_RDWR]
+write (FD 3) "ABCDE" 5
+lseek (FD 3) 0 SEEK_SET
+read (FD 3) 100
+close (FD 3)
+
+# write only on existing file
+open "f1.txt" [O_WRONLY]
+write (FD 3) "012" 3
+close (FD 3)
+
+# read that file again
+open "f1.txt" [O_RDWR]
+read (FD 3) 100
+close (FD 3)
+
+# open for execute 
+open "f1.txt" [O_EXEC]
+read (FD 3) 100
+close (FD 3)
+
+
+##############################################
+# opening problems with 
+# non-existing files and dirs
+##############################################
+
+open "non-such-file.txt" [O_RDONLY]
+read (FD 3) 100
+close (FD 3)
+
+open /no_such_dir/non-such-file.txt [O_RDONLY]
+read (FD 3) 100
+close (FD 3)
+
+open "non-such-dir/" [O_RDONLY]
+read (FD 3) 100
+close (FD 3)
+
+open /no_such_dir/non-such-dir2/ [O_RDONLY]
+read (FD 3) 100
+close (FD 3)
+
+# opening an existing file with a slash at the end
+open "f1.txt/" [O_RDONLY] 
+read (FD 3) 100
+close (FD 3)
+
+##############################################
+# testing file permissions
+##############################################
+
+# read-only needs read permission
+chmod "f1.txt" <r-------->
+open_close "f1.txt" [O_RDONLY]
+
+chmod "f1.txt" <--------->
+open_close "f1.txt" [O_RDONLY]
+
+
+# write-only needs write permission
+chmod "f1.txt" <-w------->
+open_close "f1.txt" [O_WRONLY]
+
+chmod "f1.txt" <--------->
+open_close "f1.txt" [O_WRONLY]
+
+chmod "f1.txt" <r-------->
+open_close "f1.txt" [O_WRONLY]
+
+# read-write needs read and write permission
+chmod "f1.txt" <rw------->
+open_close "f1.txt" [O_RDWR]
+
+chmod "f1.txt" <r-------->
+open_close "f1.txt" [O_RDWR]
+
+chmod "f1.txt" <-w------->
+open_close "f1.txt" [O_RDWR]
+
+chmod "f1.txt" <--------->
+open_close "f1.txt" [O_RDWR]
+
+
+# truncate requires write permission
+chmod "f1.txt" <rw------->
+open_close "f1.txt" [O_RDONLY;O_TRUNC]
+
+chmod "f1.txt" <r-------->
+open_close "f1.txt" [O_RDONLY;O_TRUNC]
+
+
+# append makes only sense with write, but 
+# does not require it
+chmod "f1.txt" <r-------->
+open "f1.txt" [O_RDONLY;O_APPEND]
+write (FD 3) "0123456789" 10
+close (FD 3)
+
+
+##############################################
+# testing dir permissions
+##############################################
+
+mkdir "d1" <rwxr-xr-x>
+
+# creating a file needs search and write permission
+# to the parent directory
+chmod "d1" <--------->
+open_close "d1/f2.txt" [O_WRONLY;O_CREAT] <rw-r--r-->
+
+chmod "d1" <-w------->
+open_close "d1/f2.txt" [O_WRONLY;O_CREAT] <rw-r--r-->
+
+chmod "d1" <--x------>
+open_close "d1/f2.txt" [O_WRONLY;O_CREAT] <rw-r--r-->
+
+chmod "d1" <-wx------>
+open_close "d1/f2.txt" [O_WRONLY;O_CREAT] <rw-r--r-->
+
+
+# to read a file, we needs search permission for the
+# parent directory (as well as to the file itself)
+
+chmod "d1" <--------->
+open_close "d1/f2.txt" []
+
+chmod "d1" <--x------>
+open_close "d1/f2.txt" []
+
+
+# search permission to the parent is enough to modify a file
+chmod "d1" <--------->
+open_close "d1/f2.txt" [O_WRONLY]
+
+chmod "d1" <--x------>
+open_close "d1/f2.txt" [O_WRONLY]
+
+# clean-up for dump etc.
+chmod "d1" <rwx------>

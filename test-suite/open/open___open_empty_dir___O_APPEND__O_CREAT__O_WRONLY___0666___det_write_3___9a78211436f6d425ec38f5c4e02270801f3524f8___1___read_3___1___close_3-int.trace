@@ -1,0 +1,23 @@
+@type script
+#####################################
+# Test open___open_empty_dir___O_APPEND__O_CREAT__O_WRONLY___0666___det_write_3___9a78211436f6d425ec38f5c4e02270801f3524f8___1___read_3___1___close_3
+#####################################
+mkdir "empty_dir" 0o777
+mkdir "nonempty_dir" 0o777
+open_close "nonempty_dir/f1.txt" [O_CREAT;O_WRONLY] 0o666
+open "nonempty_dir/f2.txt" [O_CREAT;O_WRONLY] 0o666
+write! (FD 3) "Lorem ipsum dolor sit amet, co" 30
+close (FD 3)
+symlink "nonempty_dir/f2.txt" "f3_sl.txt"
+symlink "broken" "broken_sl"
+link "nonempty_dir/f4.txt" "f4_link.txt"
+link "nonempty_dir" "dir_link"
+
+open "empty_dir" [O_CREAT;O_APPEND;O_WRONLY] 0o666
+write! (FD 3) "@" 1
+read (FD 3) 1
+close (FD 3)
+
+dump 
+
+

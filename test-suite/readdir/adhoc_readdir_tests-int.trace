@@ -1,0 +1,286 @@
+@type script
+# adhoc_readdir_tests
+#
+
+####################################
+# Test 1 
+# reading empty dir
+####################################
+
+mkdir /d1 0o777
+
+opendir /d1
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+
+
+####################################
+# Test 2 
+# reading non-empty dir without
+# interference
+####################################
+
+mkdir /d2 0o777
+chdir /d2
+
+open_close "f1.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f2.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f3.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f4.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f5.txt" [O_RDWR;O_CREAT] 0o666
+
+opendir /d2
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+
+
+####################################
+# Test 3
+# reading non-empty dir with rewind
+####################################
+
+mkdir /d3 0o777
+chdir /d3
+
+open_close "f1.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f2.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f3.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f4.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f5.txt" [O_RDWR;O_CREAT] 0o666
+
+opendir /d3
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+rewinddir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+rewinddir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+
+
+####################################
+# Test 4
+# reading a dir with two DHs
+####################################
+
+mkdir /d4 0o777
+chdir /d4
+
+open_close "f1.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f2.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f3.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f4.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f5.txt" [O_RDWR;O_CREAT] 0o666
+
+opendir /d4
+opendir /d4
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 2)
+readdir (DH 2)
+rewinddir (DH 1)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+closedir (DH 2)
+closedir (DH 1)
+
+
+####################################
+# Test 5
+# reading non-empty dir while
+# changing its content
+####################################
+
+mkdir /d5 0o777
+chdir /d5
+
+open_close "f1.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f2.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f3.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f4.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f5.txt" [O_RDWR;O_CREAT] 0o666
+
+opendir /d5
+readdir (DH 1)
+unlink "f1.txt"
+readdir (DH 1)
+open_close "f6.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f1.txt" [O_RDWR;O_CREAT] 0o666
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+unlink "f6.txt"
+rename "f2.txt" "f2-changed.txt"
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+rewinddir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+
+
+####################################
+# Test 6
+# reading a dir with with to DHs
+####################################
+
+mkdir /d6 0o777
+chdir /d6
+
+open_close "f1.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f2.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f3.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f4.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f5.txt" [O_RDWR;O_CREAT] 0o666
+
+opendir /d6
+opendir /d6
+readdir (DH 1)
+readdir (DH 2)
+unlink "f1.txt"
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+open_close "f6.txt" [O_RDWR;O_CREAT] 0o666
+open_close "f1.txt" [O_RDWR;O_CREAT] 0o666
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+unlink "f6.txt"
+rename "f2.txt" "f2-changed.txt"
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 2)
+readdir (DH 2)
+rewinddir (DH 1)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+readdir (DH 1)
+readdir (DH 2)
+closedir (DH 2)
+closedir (DH 1)
+
+####################################
+# Test 7
+# rewinddir on not existing DH
+####################################
+
+rewinddir (DH 799)
+
+####################################
+# Test 8
+# opendir on file
+####################################
+
+open_close "f1.txt" [O_RDWR;O_CREAT] 0o666
+opendir "f1.txt"
+
+####################################
+# Test 9
+# opendir on not existing directory
+####################################
+
+opendir /ciaociao
+
+####################################
+# Test 10
+# opendir on symlink
+####################################
+symlink /d1 /my_symlink
+opendir /my_symlink
+closedir (DH 1)
+
+####################################
+# Test 11
+# opendir on erroneous path
+####################################
+
+opendir ""
+
+####################################
+# Test 12
+# readdir on unexisting dh
+####################################
+
+readdir (DH 999)
+
+####################################
+# Test 13
+# closedir on unexisting dh
+####################################
+
+closedir (DH 999)

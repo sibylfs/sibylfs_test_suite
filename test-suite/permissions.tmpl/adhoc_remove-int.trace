@@ -1,0 +1,83 @@
+@type script
+###########################################
+# Testing removing files and directories
+###########################################
+
+# create dirs with various permissions and
+# a file and dir inside it
+mkdir      /tmp_dir_rwx/ 0o777
+open_close /tmp_dir_rwx/file.txt [O_RDWR;O_CREAT] 0o666
+mkdir      /tmp_dir_rwx/subdir 0o777
+chmod      /tmp_dir_rwx/ <rwx------>
+
+mkdir      /tmp_dir_rwt/ 0o777
+open_close /tmp_dir_rwt/file.txt [O_RDWR;O_CREAT] 0o666
+mkdir      /tmp_dir_rwt/subdir 0o777
+chmod      /tmp_dir_rwt/ <rwx-----T>
+
+mkdir      /tmp_dir_rw/ 0o777
+open_close /tmp_dir_rw/file.txt [O_RDWR;O_CREAT] 0o666
+mkdir      /tmp_dir_rw/subdir 0o777
+chmod      /tmp_dir_rw/  <rw------->
+
+mkdir      /tmp_dir_rx/ 0o777
+open_close /tmp_dir_rx/file.txt [O_RDWR;O_CREAT] 0o666
+mkdir      /tmp_dir_rx/subdir 0o777
+chmod      /tmp_dir_rx/  <r-x------>
+
+mkdir      /tmp_dir_r/ 0o777
+open_close /tmp_dir_r/file.txt [O_RDWR;O_CREAT] 0o666
+mkdir      /tmp_dir_r/subdir 0o777
+chmod      /tmp_dir_r/   <r-------->
+
+mkdir      /tmp_dir_wx/ 0o777
+open_close /tmp_dir_wx/file.txt [O_RDWR;O_CREAT] 0o666
+mkdir      /tmp_dir_wx/subdir 0o777
+chmod      /tmp_dir_wx/  <-wx------>
+
+mkdir      /tmp_dir_w/ 0o777
+open_close /tmp_dir_w/file.txt [O_RDWR;O_CREAT] 0o666
+mkdir      /tmp_dir_w/subdir 0o777
+chmod      /tmp_dir_w/   <-w------->
+
+mkdir      /tmp_dir_wt/ 0o777
+open_close /tmp_dir_wt/file.txt [O_RDWR;O_CREAT] 0o666
+mkdir      /tmp_dir_wt/subdir 0o777
+chmod      /tmp_dir_wt/ <-wx-----T>
+
+mkdir      /tmp_dir_rwx/ 0o777
+open_close /tmp_dir_rwx/file.txt [O_RDWR;O_CREAT] 0o666
+mkdir      /tmp_dir_rwx/subdir 0o777
+chmod /tmp_dir_x/   <--x------>
+
+mkdir      /tmp_dir_/ 0o777
+open_close /tmp_dir_/file.txt [O_RDWR;O_CREAT] 0o666
+mkdir      /tmp_dir_/subdir 0o666
+chmod      /tmp_dir_/    <--------->
+
+
+# trying to delete the file
+unlink /tmp_dir_rwx/file.txt
+unlink /tmp_dir_rwt/file.txt
+unlink /tmp_dir_rw/file.txt
+unlink /tmp_dir_rx/file.txt
+unlink /tmp_dir_r/file.txt
+unlink /tmp_dir_wx/file.txt
+unlink /tmp_dir_wt/file.txt
+unlink /tmp_dir_w/file.txt
+unlink /tmp_dir_x/file.txt
+unlink /tmp_dir_/file.txt
+
+# trying to delete the dir
+rmdir /tmp_dir_rwx/subdir
+rmdir /tmp_dir_rwt/subdir
+rmdir /tmp_dir_rw/subdir
+rmdir /tmp_dir_rx/subdir
+rmdir /tmp_dir_r/subdir
+rmdir /tmp_dir_wx/subdir
+rmdir /tmp_dir_wt/subdir
+rmdir /tmp_dir_w/subdir
+rmdir /tmp_dir_x/subdir
+rmdir /tmp_dir_/subdir
+
+dump

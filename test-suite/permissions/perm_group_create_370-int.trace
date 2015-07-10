@@ -1,0 +1,39 @@
+@type script
+#####################################
+# Test perm_group_create_370
+#####################################
+
+Pid 2 -> create (User_id 1) (Group_id 1)
+add_user_to_group (User_id 1) (Group_id 1)
+Pid 2 -> umask 0o000
+
+Pid 3 -> create (User_id 2) (Group_id 2)
+add_user_to_group (User_id 2) (Group_id 2)
+add_user_to_group (User_id 2) (Group_id 1)
+Pid 3 -> umask 0o000
+
+#Initialize environment
+
+Pid 2 -> mkdir "/d" 0o777
+Pid 2 -> chdir "/d"
+Pid 3 -> chdir "/d"
+Pid 2 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+Pid 2 -> open_close "f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+Pid 2 -> mkdir "d2" 0o777
+Pid 2 -> mkdir "d4" 0o777
+Pid 2 -> chown "/d" (User_id 1) (Group_id 1)
+Pid 2 -> chmod "/d" 0o370
+
+#Test
+
+Pid 3 -> mkdir "d1" 0o777
+Pid 3 -> mkdir "d2" 0o777
+Pid 3 -> open_close "f1" [O_EXCL;O_CREAT;O_RDWR] 0o666
+Pid 3 -> open_close "f2" [O_EXCL;O_CREAT;O_RDWR] 0o666
+Pid 3 -> mkdir "/d/d3" 0o777
+Pid 3 -> mkdir "/d/d4" 0o777
+Pid 3 -> open_close "/d/f3" [O_EXCL;O_CREAT;O_RDWR] 0o666
+Pid 3 -> open_close "/d/f4" [O_EXCL;O_CREAT;O_RDWR] 0o666
+Pid 3 -> open_close "/d/f-nonexist" [O_RDONLY]
+
+dump "/"

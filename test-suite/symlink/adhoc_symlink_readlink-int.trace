@@ -1,0 +1,48 @@
+@type script
+# adhoc_symlink_cycles
+
+# initialization
+
+mkdir /dir_1 0o777
+mkdir /dir_1/dir_11 0o777
+mkdir /dir_2 0o777
+
+open /dir_1/f1.txt [O_RDWR;O_CREAT] 0o666
+write! (FD 3) "content of /dir_1/f1.txt" 24
+close (FD 3)
+
+open /dir_1/f2.txt [O_RDWR;O_CREAT] 0o666
+write! (FD 3) "content of /dir_1/f2.txt" 24 
+close (FD 3)
+
+open /dir_2/f1.txt [O_RDWR;O_CREAT] 0o666
+write! (FD 3) "content of /dir_2/f1.txt" 24 
+close (FD 3)
+
+symlink "dir_1"        /symlink_1
+symlink "dir_1/f1.txt" /symlink_2
+symlink "symlink_1"    /symlink_3
+symlink "symlink_2"    /symlink_4
+symlink "symlink_4"    /symlink_5
+
+# read the content of symbolic links
+readlink /symlink_1
+readlink /symlink_1/
+readlink /symlink_1//
+readlink /symlink_2
+readlink /symlink_2/
+readlink /symlink_2//
+readlink /symlink_3
+readlink /symlink_3/
+readlink /symlink_3//
+readlink /symlink_4
+readlink /symlink_4/
+readlink /symlink_4//
+readlink /symlink_5
+readlink /symlink_5/
+readlink /symlink_5//
+readlink /symlink_5///
+readlink /symlink_5////
+readlink /no_such_link
+
+dump /

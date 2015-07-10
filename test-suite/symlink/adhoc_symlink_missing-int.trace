@@ -1,0 +1,21 @@
+@type script
+# adhoc_symlink_missing
+
+# linking to non-existing is OK
+symlink /no_such_dir/ /slink_no_such1
+symlink /no_such_file /slink_no_such2
+chdir /slink_no_such1
+chdir /slink_no_such1/
+chdir /slink_no_such2
+chdir /slink_no_such2/
+chdir /slink_no_such1/something_else
+chdir /slink_no_such1/something_else/
+mkdir /slink_no_such1/ 0o777
+mkdir /slink_no_such1/ss 0o777
+mkdir /slink_no_such1 0o777
+mkdir /slink_no_such2/ 0o777
+mkdir /slink_no_such2/ss 0o777
+mkdir /slink_no_such2 0o777
+unlink /slink_no_such1
+unlink /slink_no_such2
+dump /

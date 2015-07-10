@@ -1,0 +1,13 @@
+@type script
+
+#####################################
+# Test rename root
+#####################################
+mkdir /test_dir_0001 01777
+chdir /test_dir_0001
+mkdir "empty_dir1" 01777
+mkdir "empty_dir2" 0o777
+mkdir "nonempty_dir1" 0o777
+
+rename / "mydir"
+

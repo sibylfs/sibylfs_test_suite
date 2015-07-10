@@ -1,0 +1,55 @@
+@type script
+# adhoc_symlink_errors
+
+# initialization
+
+mkdir /dir_1 0o777
+mkdir /dir_1/dir_11 0o777
+mkdir /dir_2 0o777
+
+open /dir_1/f1.txt [O_RDWR;O_CREAT] 0o666
+write! (FD 3) "content of /dir_1/f1.txt" 24
+close (FD 3)
+
+open /dir_1/f2.txt [O_RDWR;O_CREAT] 0o666
+write! (FD 3) "content of /dir_1/f2.txt" 24 
+close (FD 3)
+
+open /dir_2/f1.txt [O_RDWR;O_CREAT] 0o666
+write! (FD 3) "content of /dir_2/f1.txt" 24 
+close (FD 3)
+
+###################################################
+# whether a symbolic link that occurs as the last
+# component of a resolved path is followed depends
+# on the command, so test it for all commands
+###################################################
+
+symlink /dir_1 /dir_link
+symlink /dir_1/f1.txt /file_link
+symlink /not_there /gone_link
+
+link /dir_1 /dir_3
+link /dir_link /dir_4
+link /dir_1/f1.txt /f1.txt
+link /file_link /f2.txt
+link /gone_link /f3.txt
+
+mkdir /dir_link 0o777
+mkdir /file_link 0o777
+mkdir /dir_1 0o777
+mkdir /dir_1/f1.txt 0o777
+mkdir /gone_link 0o777
+
+symlink /f_5 /new_file_link_1
+symlink /f_6 /new_file_link_2
+open_close /new_file_link_1 [O_RDWR;O_CREAT] 0o666
+symlink "xyz" /new_file_link_2
+
+stat /dir_link
+stat /file_link
+
+truncate /file_link 0
+stat /file_link
+
+dump /

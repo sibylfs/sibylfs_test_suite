@@ -1,0 +1,75 @@
+@type script
+
+# Try to operate in a directory which has been removed
+
+Pid 2 -> create
+
+opendir /
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+
+mkdir /dmz 0o777
+
+chdir /dmz
+
+stat "."
+
+mkdir "subdir" 0o600
+
+stat "."
+
+opendir "."
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+
+opendir "."
+
+Pid 2 -> rmdir /dmz/subdir
+Pid 2 -> rmdir /dmz
+
+stat "."
+
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+rewinddir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+
+opendir "."
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+readdir (DH 1)
+closedir (DH 1)
+
+open_close "bar" [O_CREAT] 0o600
+
+mkdir "subdir" 0o700
+
+stat "."
+
+dump "."
+
+Pid 2 -> mkdir /dmz 0o777
+Pid 2 -> mkdir /dmz/newdir 0o777
+
+stat "."
+
+stat "../dmz"
+
+stat /dmz
+
+Pid 2 -> stat /dmz
+
+dump /

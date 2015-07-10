@@ -1,0 +1,55 @@
+@type script
+# adhoc_symlink_relative
+
+mkdir /dir 0o777
+mkdir /dir/subdir 0o777
+
+open /dir/f1.txt [O_RDWR;O_CREAT] 0o666
+write! (FD 3) "^/dir/f1.txt$" 13
+close (FD 3)
+
+symlink "f1.txt" /dir/sl1_f1.txt
+open /dir/sl1_f1.txt []
+pread! (FD 3) 1000 0
+close (FD 3)
+
+symlink "../dir/f1.txt" /dir/sl2_f1.txt
+open /dir/sl2_f1.txt []
+pread! (FD 3) 1000 0
+close (FD 3)
+
+# should be fine because we hit root which is parent to itself
+symlink "../../dir/f1.txt" /dir/sl3_f1.txt
+open /dir/sl3_f1.txt []
+pread! (FD 3) 1000 0
+close (FD 3)
+
+symlink "../nonexistent/../dir/f1.txt" /dir/sl4_f1.txt
+open /dir/sl4_f1.txt []
+pread! (FD 3) 1000 0
+close (FD 3)
+
+symlink "f1.txt/../f1.txt" /dir/sl5_f1.txt
+open /dir/sl5_f1.txt []
+pread! (FD 3) 1000 0
+close (FD 3)
+
+# follow a symlink to a dir and then go to parent dir
+symlink /dir/subdir /dirlink
+chdir /dirlink
+chdir ".."
+# we should be in /dir now, not /, so we can read f1.txt
+open_close "f1.txt" []
+open_close "dir/f1.txt" []
+unlink /dirlink
+
+###################################################
+# testing symlink resolution
+###################################################
+
+symlink "../dir/f1.txt" /dir_1/../../symlink_dir_f1.txt
+open "symlink_dir_d1.txt" []
+pread! (FD 3) 1000 0
+close (FD 3)
+
+dump /

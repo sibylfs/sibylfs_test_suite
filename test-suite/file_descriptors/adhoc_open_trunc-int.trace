@@ -1,0 +1,59 @@
+@type script
+
+##############################################
+# O_TRUNC
+##############################################
+
+# O_TRUNC works as expected
+open "f1.txt" [O_WRONLY;O_CREAT] <rw-r--r-->
+write! (FD 3) "0123456789" 10
+close (FD 3)
+
+open "f1.txt" [O_RDWR]
+read! (FD 3) 100
+close (FD 3)
+
+open "f1.txt" [O_RDWR;O_TRUNC]
+read! (FD 3) 100
+close (FD 3)
+
+# behaviour of O_TRUNC without write flag is undefined on linux
+# architecture, the O_TRUNC just truncates even in read-only mode
+open "f1.txt" [O_RDWR;O_TRUNC]
+write! (FD 3) "0123456789" 10
+close (FD 3)
+
+open "f1.txt" []
+read! (FD 3) 100
+close (FD 3)
+
+open "f1.txt" [O_TRUNC]
+read! (FD 3) 100
+close (FD 3)
+
+# but we can't truncate file we don't have write permission to
+open "f1.txt" [O_RDWR;O_TRUNC]
+write (FD 3) "0123456789" 10
+close (FD 3)
+
+open "f1.txt" []
+read! (FD 3) 100
+close (FD 3)
+
+chmod "f1.txt" <r--r--r-->
+open "f1.txt" [O_TRUNC]
+read! (FD 3) 100
+close (FD 3)
+
+open "f1.txt" []
+read! (FD 3) 100
+close (FD 3)
+
+chmod "f1.txt" <rw-r--r-->
+open "f1.txt" [O_TRUNC]
+read! (FD 3) 100
+close (FD 3)
+
+open "f1.txt" []
+read! (FD 3) 100
+close (FD 3)

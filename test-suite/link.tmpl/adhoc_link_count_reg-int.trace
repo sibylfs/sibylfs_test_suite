@@ -1,0 +1,37 @@
+@type script
+
+#################################################
+# Test link count of regular files after link
+#################################################
+
+# a new created file should have link count 1
+
+open_close "/f1.txt" [O_CREAT] 0o666
+stat "/f1.txt"
+
+# after linking the file, both the link and the file should have link count 2
+
+link "/f1.txt" "/f2_hl.txt"
+stat "/f1.txt"
+stat "/f2_hl.txt"
+
+# keep linking the file should keep increasing the link count
+
+link "/f2_hl.txt" "/f2_hl1.txt"
+stat "/f1.txt"
+stat "/f2_hl.txt"
+stat "/f2_hl1.txt"
+
+link "/f2_hl1.txt" "/f2_hl2.txt"
+stat "/f1.txt"
+stat "/f2_hl.txt"
+stat "/f2_hl1.txt"
+stat "/f2_hl2.txt"
+
+## uncomment this test when we have lstat in place
+# linking a symlink should increase the symlink link count
+
+#symlink "/f1.txt" "f3_sl.txt"
+#link "f3_sl.txt" "f3_sl_hl.txt"
+#lstat "f3_sl.txt"
+#lstat "f3_sl_hl.txt"

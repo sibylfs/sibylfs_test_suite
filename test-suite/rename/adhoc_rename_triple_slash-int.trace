@@ -1,0 +1,17 @@
+@type script
+
+#################################
+# Test triple slash with a rename
+#################################
+
+# Test1
+mkdir ////ciao 0o775
+rename ///ciao "mydir"
+
+# Test2
+rename //// "mydir"
+
+# Test3
+rename /// "mydir"
+
+dump

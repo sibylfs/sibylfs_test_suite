@@ -1,0 +1,18 @@
+@type script
+# adhoc_symlink_missing
+
+# initialization
+
+mkdir /dir_1 0o777
+mkdir /dir_2 0o777
+
+open /dir_1/f1.txt [O_RDWR;O_CREAT] 0o666
+write! (FD 3) "content of /dir_1/f1.txt" 24
+close (FD 3)
+
+# existing files and dirs cannot be overridden by symlink
+symlink /dir_1 /dir_2
+symlink /dir_1 /dir_1/f1.txt
+symlink /dir_1 /dir_1/symlink.txt
+symlink /dir_2 /dir_1/symlink.txt
+dump /

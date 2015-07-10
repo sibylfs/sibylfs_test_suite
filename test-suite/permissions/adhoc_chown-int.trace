@@ -1,0 +1,71 @@
+@type script
+###########################################
+# Testing chown
+###########################################x
+
+# Initialisation
+
+umask 0o000
+mkdir /dir 0o777
+open_close /file.txt [O_RDWR;O_CREAT] 0o777
+symlink /file.txt /sl
+
+# test initial permissions
+
+lstat /dir
+lstat /file.txt
+lstat /sl
+
+# Test 1 - change the ownership to the one the directory already has
+
+chown /dir (User_id 0) (Group_id 0)
+lstat /dir
+
+# Test 2 - change the ownership to the one the file already has
+
+chown /file.txt (User_id 0) (Group_id 0)
+lstat /file.txt
+
+# Test 3 - erroneous path
+
+chown "" (User_id 0) (Group_id 0)
+
+# Test 4 - not existing path
+
+chown /ciaociao (User_id 0) (Group_id 0)
+lstat /ciaociao
+
+# Test 5 - change the ownership of the directory
+
+chown /dir (User_id 1) (Group_id 0)
+lstat /dir
+
+chown /dir (User_id 0) (Group_id 1)
+lstat /dir
+
+chown /dir (User_id 1) (Group_id 1)
+lstat /dir
+
+# Test 6 - change the ownership of the file
+
+chown /file.txt (User_id 1) (Group_id 0)
+lstat /file.txt
+
+chown /file.txt (User_id 0) (Group_id 1)
+lstat /file.txt
+
+chown /file.txt (User_id 1) (Group_id 1)
+lstat /file.txt
+
+# Test 7 - using chown on a symlink
+
+chown /sl (User_id 1) (Group_id 0)
+lstat /sl
+
+chown /sl (User_id 0) (Group_id 1)
+lstat /sl
+
+chown /sl (User_id 1) (Group_id 1)
+lstat /sl
+
+stat /sl

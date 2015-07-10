@@ -1,0 +1,104 @@
+@type script
+# adhoc_chdir_tests
+
+# initialization
+# create directory structure
+#
+# - d1
+#   + d11
+#   + d12
+# - d2
+#   + d21
+#   + d22
+#
+# in each directory create a file with the same name 
+# as the directory
+
+open_close /root.txt [O_RDWR;O_CREAT] 0o666
+
+mkdir /d1 0o777
+mkdir /d1/d11 0o777
+mkdir /d1/d12 0o777
+open_close /d1/f1.txt [O_RDWR;O_CREAT] 0o666
+open_close /d1/d11/f11.txt [O_RDWR;O_CREAT] 0o666
+open_close /d1/d12/f12.txt [O_RDWR;O_CREAT] 0o666
+
+mkdir /d2 0o777
+mkdir /d2/d21 0o777
+mkdir /d2/d22 0o777
+open_close /d2/f2.txt [O_RDWR;O_CREAT] 0o666
+open_close /d2/d21/f21.txt [O_RDWR;O_CREAT] 0o666
+open_close /d2/d22/f22.txt [O_RDWR;O_CREAT] 0o666
+
+
+###############################################
+# Tests
+###############################################
+
+# we test whether we are in the correct directory
+# by opening a file. The file-names should correspond
+# to the directory names 
+
+# check we are at the beginning in root directory
+open_close "root.txt" []
+open_close "no_such_file.txt" []
+open_close "f1.txt" []
+
+# change to d1
+chdir "d1"
+open_close "f1.txt" []
+open_close "root.txt" []
+
+# change to d11
+chdir "d11"
+open_close "f11.txt" []
+open_close "../f1.txt" []
+open_close "../../root.txt" []
+open_close "no_such_file.txt" []
+
+# change back to d1
+chdir ".."
+open_close "d11/f11.txt" []
+open_close "d12/f12.txt" []
+open_close "f1.txt" []
+open_close "../root.txt" []
+open_close "no_such_file.txt" []
+
+# stay in d1
+chdir "."
+open_close "d11/f11.txt" []
+open_close "d12/f12.txt" []
+open_close "f1.txt" []
+open_close "../root.txt" []
+open_close "no_such_file.txt" []
+
+# switch to d2
+chdir "../d2"
+open_close "d21/f21.txt" []
+open_close "f2.txt" []
+open_close "../root.txt" []
+open_close "no_such_file.txt" []
+
+# switch to non-existing subdirectory, should fail and stay in d2
+chdir "no_such_dir"
+open_close "d21/f21.txt" []
+open_close "f2.txt" []
+open_close "../root.txt" []
+open_close "no_such_file.txt" []
+
+# switch to file
+chdir "f2.txt"
+open_close "d21/f21.txt" []
+open_close "f2.txt" []
+open_close "../root.txt" []
+open_close "no_such_file.txt" []
+
+# switch to restricted directory
+
+Pid 2 -> create (User_id 1) (Group_id 0)
+
+chmod / 0o1777
+
+Pid 1 -> mkdir /empty_dir1 0o1000
+
+Pid 2 -> chdir /empty_dir1

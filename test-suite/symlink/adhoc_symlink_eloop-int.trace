@@ -1,0 +1,158 @@
+@type script
+# adhoc_symlink_eloop
+
+# Note: ELOOP counters may differ depending on the entry point. This
+# script only tests the counter used for the stat syscall.
+
+symlink /0 /1
+stat /1
+
+symlink /1 /2
+stat /2
+
+symlink /2 /3
+stat /3
+
+symlink /3 /4
+stat /4
+
+symlink /4 /5
+stat /5
+
+symlink /5 /6
+stat /6
+
+symlink /6 /7
+stat /7
+
+symlink /7 /8
+stat /8
+
+symlink /8 /9
+stat /9
+
+symlink /9 /10
+stat /10
+
+symlink /10 /11
+stat /11
+
+symlink /11 /12
+stat /12
+
+symlink /12 /13
+stat /13
+
+symlink /13 /14
+stat /14
+
+symlink /14 /15
+stat /15
+
+symlink /15 /16
+stat /16
+
+symlink /16 /17
+stat /17
+
+symlink /17 /18
+stat /18
+
+symlink /18 /19
+stat /19
+
+symlink /19 /20
+stat /20
+
+symlink /20 /21
+stat /21
+
+symlink /21 /22
+stat /22
+
+symlink /22 /23
+stat /23
+
+symlink /23 /24
+stat /24
+
+symlink /24 /25
+stat /25
+
+symlink /25 /26
+stat /26
+
+symlink /26 /27
+stat /27
+
+symlink /27 /28
+stat /28
+
+symlink /28 /29
+stat /29
+
+symlink /29 /30
+stat /30
+
+symlink /30 /31
+stat /31
+
+symlink /31 /32
+stat /32
+
+symlink /32 /33
+stat /33
+
+symlink /33 /34
+stat /34
+
+symlink /34 /35
+stat /35
+
+symlink /35 /36
+stat /36
+
+symlink /36 /37
+stat /37
+
+symlink /37 /38
+stat /38
+
+symlink /38 /39
+stat /39
+
+symlink /39 /40
+stat /40
+
+symlink /40 /41
+stat /41
+
+symlink /41 /42
+stat /42
+
+symlink /42 /43
+stat /43
+
+symlink /43 /44
+stat /44
+
+symlink /44 /45
+stat /45
+
+symlink /45 /46
+stat /46
+
+symlink /46 /47
+stat /47
+
+symlink /47 /48
+stat /48
+
+symlink /48 /49
+stat /49
+
+symlink /49 /50
+stat /50
+
+symlink /50 /51
+stat /51

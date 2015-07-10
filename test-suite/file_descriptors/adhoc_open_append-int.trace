@@ -1,0 +1,68 @@
+@type script
+
+##############################################
+# O_APPEND
+##############################################
+
+# write fresh content
+open "f1.txt" [O_RDWR;O_CREAT] 0o600
+write! (FD 3) "0123456789" 10
+pread! (FD 3) 100 0
+close (FD 3)
+
+# override at beginning
+open "f1.txt" [O_RDWR]
+write (FD 3) "ABCDE" 5
+pread! (FD 3) 100 0
+close (FD 3)
+
+# override at end
+open "f1.txt" [O_RDWR;O_APPEND]
+write (FD 3) "ABCDE" 5
+pread! (FD 3) 100 0
+close (FD 3)
+
+# O_APPEND sets file-offset before every(!) write
+open "f1.txt" [O_RDWR;O_APPEND]
+write (FD 3) "XXX" 3
+lseek (FD 3) 0 SEEK_SET
+write (FD 3) "YYY" 3
+lseek (FD 3) 0 SEEK_SET
+write (FD 3) "ZZZ" 3
+read (FD 3) 100
+lseek (FD 3) 0 SEEK_SET
+read (FD 3) 100
+pread! (FD 3) 100 0
+close (FD 3)
+
+# O_APPEND also affects pwrite
+open "f1.txt" [O_RDWR;O_APPEND]
+pwrite (FD 3) "AAA" 3 0
+pwrite (FD 3) "BBB" 3 -1
+pwrite (FD 3) "CCC" 3 5
+pread! (FD 3) 100 0
+close (FD 3)
+
+# pwrite does not modify fd-offset, whereas write does
+open "f1.txt" [O_RDWR;O_APPEND]
+lseek (FD 3) 0 SEEK_CUR
+pwrite (FD 3) "DDD" 3 0
+lseek (FD 3) 0 SEEK_CUR
+write (FD 3) "EEE" 3
+lseek (FD 3) 0 SEEK_CUR
+pread! (FD 3) 100 0
+close (FD 3)
+
+
+# O_APPEND does only influence write and pwrite
+open "f1.txt" [O_RDWR;O_APPEND]
+read (FD 3) 100
+close (FD 3)
+
+open "f1.txt" [O_RDWR;O_APPEND]
+pread (FD 3) 100 0
+close (FD 3)
+
+open "f1.txt" [O_RDWR;O_APPEND]
+lseek (FD 3) 0 SEEK_CUR
+close (FD 3)

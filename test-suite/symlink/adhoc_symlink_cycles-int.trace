@@ -1,0 +1,51 @@
+@type script
+# adhoc_symlink_cycles
+
+# cyclic links can be created, but raise ELOOP when followed
+symlink /1 /2
+symlink /2 /1
+chdir /1
+dump /
+unlink /1
+unlink /2
+
+# self-cycles are still cycles
+symlink /1 /2
+link /2 /1
+chdir /2
+dump /
+unlink /1
+unlink /2
+
+# introductory slides don't matter for ELOOP
+symlink /1       /slide_1
+symlink /slide_1 /slide_2
+symlink /slide_2 /slide_3
+symlink /2       /1
+symlink /1       /2
+chdir /slide_3
+unlink /1
+unlink /2
+unlink /slide_1
+unlink /slide_2
+unlink /slide_3
+dump
+
+# directory loops are fine
+mkdir /mua 0o777
+symlink "../mua"      "mua/ha"
+chdir "mua/ha/ha/ha"
+
+# ... even multiplicative ones...
+symlink "../mua/ha/ha/ha" "he"
+chdir "he/he/he"
+symlink "../mua/he/he/he" "ho"
+chdir "ho/ho/ho"
+
+# ... but symlinks with directory loops are not
+symlink "ho/ho/ho/eloop" "eloop"
+chdir "eloop"
+
+chdir ".."
+
+dump "."

@@ -1,0 +1,9 @@
+@type script
+##############################################
+# for coverage purposes test lseek SEEK_HOLE
+##############################################
+mkdir "d1" 0o777
+
+open "d1" [O_RDONLY]
+lseek (FD 3) 0 SEEK_HOLE
+close (FD 3)

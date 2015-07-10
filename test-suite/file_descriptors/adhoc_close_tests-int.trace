@@ -1,0 +1,54 @@
+@type script
+# Tests for close
+
+# close on an fd that was never used
+close (FD 3)
+
+# and again
+close (FD 4)
+
+# open a normal file, and close
+open "f1.txt" [O_WRONLY;O_CREAT] <rw-r--r-->
+write (FD 3) "0123456789" 10
+close (FD 3)
+
+# open a normal file, and close twice
+open "f2.txt" [O_WRONLY;O_CREAT] <rw-r--r-->
+close (FD 3)
+close (FD 3)
+
+# open and close a recently closed fd
+open "f1.txt" [O_RDWR]
+close (FD 3)
+
+open "f1" [O_RDWR]
+close (FD 3)
+
+
+# multiple overlapping opens
+open "f1.txt" [O_RDWR]
+open "f2.txt" [O_RDWR]
+close (FD 3)
+open "f1.txt" [O_RDWR]
+close (FD 4)
+close (FD 3)
+
+# opening a directory
+mkdir "d1" <rwxr-xr-x>
+open "d1" [O_RDWR]
+close (FD 3)
+open "d1" [O_RDWR]
+close (FD 3)
+
+# only for coverage purposes we test openclose on a symlink
+symlink "f1.txt" "my_symlink"
+open_close "my_symlink" [O_RDWR] 0o666
+
+# closing stdin
+close (FD 0)
+
+# closing stdout
+close (FD 1)
+
+# closing stderr
+close (FD 2)

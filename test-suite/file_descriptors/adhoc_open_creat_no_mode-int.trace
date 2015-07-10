@@ -1,0 +1,9 @@
+@type script
+
+# creating a file without providing a mode is
+# unspecified in Posix. For Linux, the
+# default mode is 0o101
+open "f2.txt" [O_CREAT;O_WRONLY]
+close (FD 3)
+
+stat "f2.txt"

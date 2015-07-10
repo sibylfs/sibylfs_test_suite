@@ -1,0 +1,102 @@
+@type script
+###########################################
+# Testing chmod
+###########################################
+
+# try chmod with different values on an exiting file,
+# an existing directory, something non-existing and
+# a symbolic link. Also test that it is not affected
+# by the current umask
+
+
+# Initialisation
+
+mkdir /dir 0o777
+open /file.txt [O_RDWR;O_CREAT] 0o777
+close (FD 3)
+symlink /file.txt /sl
+umask 0o022
+
+# test initial permissions
+
+stat /dir
+stat /file.txt
+stat /sl
+
+
+# Test 1
+chmod /dir 0o000
+stat /dir
+
+# Test 2
+chmod /dir 0o777
+stat /dir
+
+# Test 3
+chmod /dir 0o755
+stat /dir
+
+# Test 4
+chmod /file.txt 0o000
+stat /file.txt
+stat /sl
+
+# Test 5
+chmod /file.txt 0o666
+stat /file.txt
+stat /sl
+
+# Test 6
+chmod /file.txt 0o644
+stat /file.txt
+stat /sl
+
+# Test 7
+chmod /no_such_dir/ 0o755
+
+# Test 8
+chmod /no_such_file 0o755
+
+
+# try again with different umask
+umask 0o000
+
+# Test 1
+chmod /dir 0o000
+stat /dir
+
+# Test 2
+chmod /dir 0o777
+stat /dir
+
+# Test 3
+chmod /dir 0o755
+stat /dir
+
+# Test 4
+chmod /file.txt 0o000
+stat /file.txt
+stat /sl
+
+# Test 5
+chmod /file.txt 0o666
+stat /file.txt
+stat /sl
+
+# Test 6
+chmod /file.txt 0o644
+stat /file.txt
+stat /sl
+
+# Test 7
+chmod /no_such_dir/ 0o755
+
+# Test 8
+chmod /no_such_file 0o755
+
+# Test 9
+chmod "" 0o755
+
+# Test 10
+symlink /file.txt /my_symlink
+chmod /my_symlink 0o644

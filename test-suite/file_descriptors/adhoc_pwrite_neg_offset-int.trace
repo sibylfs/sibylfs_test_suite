@@ -1,0 +1,44 @@
+@type script
+
+# testing pwrite with negative offsets
+# OS X will send the thread a SIGXFSZ so we sequester these tests here
+
+# pwrite with negative index
+open "f1.txt" [O_RDWR;O_CREAT] 0o666
+write (FD 3) "ABCDEF" 6
+pwrite (FD 3) "XXX" 3 -2
+close (FD 3)
+
+open "f1.txt" []
+read! (FD 3) 100
+close (FD 3)
+
+# pwrite with negative index and O_APPEND
+open "f1.txt" [O_RDWR;O_TRUNC;O_APPEND] 0o666
+write (FD 3) "ABCDEF" 6
+pwrite (FD 3) "XXX" 3 -2
+close (FD 3)
+
+open "f1.txt" []
+read! (FD 3) 100
+close (FD 3)
+
+
+# pwrite with large negative index
+open "f1.txt" [O_RDWR;O_TRUNC] 0o666
+pwrite (FD 3) "XXX" 3 -100
+close (FD 3)
+
+open "f1.txt" []
+read! (FD 3) 100
+close (FD 3)
+
+# deterministic
+
+open "/f1.txt" [O_APPEND;O_RDWR]
+pwrite! (FD 3) "ABCDF" 5 -1
+close (FD 3)
+
+open "f1.txt" [O_RDONLY]
+read! (FD 3) 100
+close (FD 3)

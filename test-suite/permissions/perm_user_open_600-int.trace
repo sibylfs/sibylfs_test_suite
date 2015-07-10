@@ -1,0 +1,22 @@
+@type script
+#####################################
+# Test perm_user_open_600
+#####################################
+
+Pid 2 -> create (User_id 1) (Group_id 1)
+add_user_to_group (User_id 1) (Group_id 1)
+Pid 2 -> umask 0o000
+
+Pid 2 -> mkdir "/d" 0o755
+Pid 2 -> open_close "/d/f" [O_CREAT;O_RDWR] 0o600
+Pid 2 -> chown "/d/f" (User_id 1) (Group_id 1)
+
+Pid 2 -> open_close "/d/f" [O_RDONLY]
+Pid 2 -> open_close "/d/f" [O_WRONLY]
+Pid 2 -> open_close "/d/f" [O_RDWR]
+Pid 2 -> open_close "/d/f" [O_TRUNC;O_RDONLY]
+Pid 2 -> open_close "/d/f" [O_TRUNC;O_WRONLY]
+Pid 2 -> open_close "/d/f" [O_APPEND;O_RDONLY]
+Pid 2 -> open_close "/d/f" [O_APPEND;O_WRONLY]
+
+dump "/"

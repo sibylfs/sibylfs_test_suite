@@ -1,0 +1,45 @@
+@type script
+
+# Try to remove the root directory by various names
+
+rmdir /
+rmdir //
+rmdir ///
+
+rmdir /.
+rmdir /..
+rmdir //.
+rmdir //..
+rmdir ///.
+rmdir ///..
+
+rmdir /./
+rmdir /.//
+rmdir /.///
+rmdir /../
+rmdir /..//
+rmdir /..///
+
+rmdir ".."
+rmdir "../"
+rmdir "..//"
+rmdir "..///"
+
+rmdir "."
+rmdir "./"
+rmdir ".//"
+rmdir ".///"
+
+rmdir "../."
+rmdir "..//."
+rmdir "..///."
+
+rmdir "../.."
+rmdir "..//.."
+rmdir "..///.."
+
+rmdir "../../"
+rmdir "../..//"
+rmdir "../..///"
+
+rmdir ""

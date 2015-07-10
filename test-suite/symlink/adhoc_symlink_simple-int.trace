@@ -1,0 +1,73 @@
+@type script
+# adhoc_symlink_simple
+
+# initialization
+
+mkdir /dir_1 0o777
+mkdir /dir_1/dir_11 0o777
+mkdir /dir_2 0o777
+
+open /dir_1/f1.txt [O_RDWR;O_CREAT] 0o666
+write! (FD 3) "content of /dir_1/f1.txt" 24
+close (FD 3)
+
+open /dir_1/f2.txt [O_RDWR;O_CREAT] 0o666
+write! (FD 3) "content of /dir_1/f2.txt" 24 
+close (FD 3)
+
+open /dir_2/f1.txt [O_RDWR;O_CREAT] 0o666
+write! (FD 3) "content of /dir_2/f1.txt" 24 
+close (FD 3)
+
+###################################################
+# simple tests, that mimic common use-cases
+###################################################
+
+# create a symlink to an existing file an read the file
+# through the symlink
+
+symlink /dir_1/f1.txt /symlink_1
+open /symlink_1 []
+pread! (FD 3) 1000 0
+close (FD 3)
+
+# try two indirections
+symlink /symlink_1 /symlink_2
+open /symlink_2 []
+pread! (FD 3) 1000 0
+close (FD 3)
+dump 
+
+# remove symlink 1 and read symlink 2
+unlink /symlink_1
+open /symlink_2 []
+pread! (FD 3) 1000 0
+close (FD 3)
+dump 
+
+# now try symbolic links to a directory
+symlink /dir_1 /symlink_1
+
+open /symlink_1/f1.txt []
+pread! (FD 3) 1000 0
+close (FD 3)
+
+open /symlink_2/f1.txt []
+pread! (FD 3) 1000 0
+close (FD 3)
+
+# renaming of symbolic links renames links not pointed to files
+rename /symlink_2 /symlink_2b
+open /symlink_2b/f1.txt []
+pread! (FD 3) 1000 0
+close (FD 3)
+
+open /dir_1/f1.txt []
+pread! (FD 3) 1000 0
+close (FD 3)
+
+open /symlink_2/f1.txt []
+pread! (FD 3) 1000 0
+close (FD 3)
+
+dump 

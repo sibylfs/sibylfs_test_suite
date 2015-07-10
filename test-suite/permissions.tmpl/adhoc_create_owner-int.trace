@@ -1,0 +1,16 @@
+@type script
+# Test the default ownership of various types of nodes
+
+Pid 2 -> create (User_id 1) (Group_id 1)
+
+Pid 2 -> symlink "b" "a"
+
+lstat "a"
+
+Pid 2 -> mkdir "d" 0o777
+
+stat "d"
+
+Pid 2 -> open_close "c" [O_RDWR; O_CREAT] 0o666
+
+stat "c"
