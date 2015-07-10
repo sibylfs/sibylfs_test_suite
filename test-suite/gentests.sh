@@ -2,6 +2,8 @@
 
 TESTGEN=`command -v ../fs_test/tgen || command -v tgen`
 
+$TESTGEN --version > testgen.version
+
 rm -r link
 $TESTGEN -l link
 cp -R link.tmpl/* link/
