@@ -27,6 +27,6 @@ symlink "../../nonempty_dir1/d2/f3.txt" "nonempty_dir2/d2/sl_f3.txt"
 
 rmdir "nonempty_dir1/d2/d3"
 
-dump ""
+dump "/"
 
 
