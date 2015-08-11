@@ -247,3 +247,18 @@ close (FD 3)
 ##############################################
 
 write (FD 99) "" 0
+
+
+
+##############################################
+# writing 0 bytes past end of file is a no-op
+# (thanks to Gidon Ernst)
+##############################################
+
+# truncate file
+open "f1.txt" [O_RDWR;O_TRUNC] 0o666
+# 99 is posn; file should remain 0 length
+pwrite (FD 3) "0123456789" 0 99
+close (FD 3)
+
+dump "/"

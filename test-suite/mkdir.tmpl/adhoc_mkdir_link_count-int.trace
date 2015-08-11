@@ -4,7 +4,7 @@
 # Test link count of files after mkdir
 ###########################################
 
-# root should have link count 1
+# root should have link count 1, but typically has a count of 2 because we are in a chroot; wontfix?
 stat "/"
 
 # a new dir should have link count 2
